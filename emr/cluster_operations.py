@@ -26,7 +26,7 @@ def create_cluster(cluster_name, instance_type, instance_count, release_label='e
                         'InstanceCount': instance_count - 1,
                     }
                 ],
-                'Ec2KeyName': 'your-key-pair',
+                'Ec2KeyName': 'test',
                 'KeepJobFlowAliveWhenNoSteps': True,
                 'TerminationProtected': False,
             },
@@ -34,7 +34,7 @@ def create_cluster(cluster_name, instance_type, instance_count, release_label='e
                 {'Name': 'Hadoop'},
                 {'Name': 'Spark'},
             ],
-            LogUri='s3://your-log-bucket/',
+            LogUri='s3://madhan-emr/monthly_bill/2024-09/logs/',
             ServiceRole='EMR_DefaultRole',
             JobFlowRole='EMR_EC2_DefaultRole',
             VisibleToAllUsers=True,

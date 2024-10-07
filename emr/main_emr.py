@@ -1,3 +1,5 @@
+# boto3\emr\main_emr.py
+
 import sys
 import os
 import logging
@@ -7,7 +9,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from emr.cluster_operations import create_cluster, terminate_cluster, list_clusters
 from emr.scaling import add_instance_group, modify_instance_group
-from emr.monitoring import setup_emr_alarm
+from emr.monitoring import setup_emr_alarm, fetch_complete_cluster_metrics, save_cluster_report_to_csv
 from emr.alert import create_or_get_sns_topic, subscribe_to_sns
 
 # Set up logging
@@ -22,8 +24,8 @@ def main_menu():
         print("3. List EMR Clusters")
         print("4. Add Instance Group")
         print("5. Modify Instance Group")
-        print("6. Setup EMR Alarm")
-        print("7. Exit")
+        print("7. Generate Daily Report")  
+        print("8. Exit")
 
         choice = input("Select an option: ").strip()
 
@@ -56,6 +58,13 @@ def main_menu():
             subscribe_to_sns(sns_topic_arn, email)
             setup_emr_alarm(cluster_id, metric_name, threshold, sns_topic_arn)
         elif choice == '7':
+            cluster_id = input("Enter the Cluster ID for the report: ")
+            if not cluster_id:
+                logger.error("Cluster ID is required. Please provide a valid EMR Cluster ID.")
+            else:
+                cluster_metrics = fetch_complete_cluster_metrics(cluster_id)
+                save_cluster_report_to_csv(cluster_metrics)
+        elif choice == '8':
             logger.info("Exiting...")
             sys.exit(0)
         else:
